@@ -8,12 +8,16 @@ import { Upload, X, CheckCircle, AlertCircle, FileUp } from "lucide-react"
 
 export default function UploadPage() {
   const [file, setFile] = useState<File | null>(null)
+  const [type, setType] = useState("")
   const [message, setMessage] = useState("")
   const [isUploading, setIsUploading] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle")
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setType(e.target.value) // ngeset type jadi inputannya soalnya function ini dipanggil pas valuenya (inputnya) berubah
+  }
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0] || null
     if (selectedFile) {
@@ -49,16 +53,27 @@ export default function UploadPage() {
   }
 
   const handleUpload = async () => {
-    if (!file) return
+    if (!file) {
+      setMessage("File must not be empty!")
+      setStatus("error")
+      return
+    }
+    if (!type){
+      setMessage("Dataset type must be specified!")
+      setStatus("error")
+      return
+    }
 
     setIsUploading(true)
     setMessage("")
     setStatus("idle")
 
-    const formData = new FormData()
+    const formData = new FormData() // masukkin file dan typenya ke sini
     formData.append("file", file)
+    formData.append("filetype", type)
 
     try {
+      // ngirim ke backend
       const res = await axios.post("http://127.0.0.1:5000/upload", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -76,7 +91,7 @@ export default function UploadPage() {
 
   const clearFile = () => {
     setFile(null)
-    setMessage("")
+    setType("")
     setStatus("idle")
     if (fileInputRef.current) {
       fileInputRef.current.value = ""
@@ -91,7 +106,15 @@ export default function UploadPage() {
             <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">Upload Dataset</h1>
             <p className="text-violet-100 mt-2">Upload your ZIP files</p>
           </div>
-
+          <div className="flex flex-col justify-center items-center text-center">
+              <label htmlFor="type" className="text-l mb-1 font-bold m-5 text-gray-800">Enter dataset type</label>
+              <input className="border-2 rounded-md border-gray-300 w-75 p-2" 
+              type="text" 
+              name="type" 
+              id="type"  
+              value={type}
+              onChange={handleInputChange}/>
+            </div>
           <div className="p-6">
             <div
               className={`border-2 border-dashed rounded-xl p-8 transition-all duration-200 text-center ${
@@ -115,6 +138,7 @@ export default function UploadPage() {
                 ref={fileInputRef}
               />
 
+              
               <div className="flex flex-col items-center justify-center space-y-3">
                 {file ? (
                   <>
@@ -146,7 +170,7 @@ export default function UploadPage() {
                 )}
               </div>
             </div>
-
+            
             <div className="mt-6">
               <button
                 onClick={handleUpload}
@@ -204,7 +228,7 @@ export default function UploadPage() {
           </div>
         </div>
 
-        <p className="text-center text-gray-500 text-sm mt-6">Secure file upload • Max size 50MB</p>
+        <p className="text-center text-gray-500 text-sm mt-6">Max size 50MB</p>
       </div>
     </div>
   )
