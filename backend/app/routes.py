@@ -19,12 +19,14 @@ def upload_zip():
         return jsonify({'message': 'File must be a .zip'}), 400
 
     filename = secure_filename(file.filename)
-    zip_path = os.path.join('uploads', filename)
+    zip_path = os.path.join('uploads/images', filename)
 
-    os.makedirs('uploads', exist_ok=True)
+    os.makedirs('uploads/images', exist_ok=True)
     file.save(zip_path)
 
     with zipfile.ZipFile(zip_path, 'r') as zip_ref:
         zip_ref.extractall('uploads/images')
 
-    return jsonify({'message': 'Zip extracted successfully!'}), 200
+    os.remove(zip_path)
+
+    return jsonify({'message': 'Zip extracted and original file removed successfully!'}), 200
