@@ -84,12 +84,12 @@ export default function UploadPage() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-purple-50 to-indigo-100 flex items-center justify-center p-4">
+    <div className="min-h-screen w-full bg-[#FFFFFF] flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-300 transform hover:shadow-2xl">
-          <div className="bg-gradient-to-r from-violet-500 to-indigo-600 p-6">
-            <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">File Uploader</h1>
-            <p className="text-violet-100 mt-2">Upload your ZIP files securely</p>
+          <div className="bg-[#67b1d6] p-6">
+            <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">Upload Dataset</h1>
+            <p className="text-violet-100 mt-2">Upload your ZIP files</p>
           </div>
 
           <div className="p-6">
