@@ -6,7 +6,7 @@ import { useState, useRef } from "react"
 import axios from "axios"
 import { Upload, X, CheckCircle, AlertCircle, FileUp } from "lucide-react"
 
-export default function UploadPage() {
+function UploadPage() {
   const [file, setFile] = useState<File | null>(null)
   const [type, setType] = useState("")
   const [message, setMessage] = useState("")
@@ -64,6 +64,13 @@ export default function UploadPage() {
       return
     }
 
+    if ((file.size / 1024 / 1024) > 50){
+      setMessage("File must not be bigger than 50MB")
+      setFile(null)
+      setStatus("error")
+      return
+    }
+
     setIsUploading(true)
     setMessage("")
     setStatus("idle")
@@ -81,6 +88,9 @@ export default function UploadPage() {
       })
       setMessage(res.data.message)
       setStatus("success")
+      setTimeout(() => {
+        window.location.reload()
+      }, 1500)
     } catch (err) {
       setMessage("Upload failed. Please try again.")
       setStatus("error")
@@ -92,6 +102,7 @@ export default function UploadPage() {
   const clearFile = () => {
     setFile(null)
     setType("")
+    setMessage("")
     setStatus("idle")
     if (fileInputRef.current) {
       fileInputRef.current.value = ""
@@ -99,7 +110,9 @@ export default function UploadPage() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-[#FFFFFF] flex items-center justify-center p-4">
+
+    <div className="min-h-screen h-full w-full bg-[#FFFFFF] flex items-center justify-center p-4">
+
       <div className="w-full max-w-md">
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-300 transform hover:shadow-2xl">
           <div className="bg-[#67b1d6] p-6">
@@ -231,5 +244,9 @@ export default function UploadPage() {
         <p className="text-center text-gray-500 text-sm mt-6">Max size 50MB</p>
       </div>
     </div>
+
   )
+  
 }
+
+export default UploadPage;

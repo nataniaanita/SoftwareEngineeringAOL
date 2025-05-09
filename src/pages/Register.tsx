@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-const Register = () => {
+function RegisterPage () {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -19,10 +19,11 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-[#f6fff7]">
       <form
         onSubmit={handleRegister}
-        className="bg-white border border-gray-300 rounded-md px-6 py-8 w-full max-w-sm"
+        
+        className="bg-white rounded-3xl shadow-xl px-6 py-8 w-full max-w-sm overflow-hidden transition-all duration-300 transform hover:shadow-2xl"
       >
         <h2 className="text-xl font-bold mb-6 text-gray-800 text-center">
           Register
@@ -80,14 +81,14 @@ const Register = () => {
 
         <button
           type="submit"
-          className="w-full bg-green-600 hover:bg-green-800 text-white py-2 px-4 rounded text-sm font-medium transition"
+          className="w-full bg-[#8745b6] hover:bg-[#74437b] text-white py-2 px-4 rounded-2xl text-sm font-medium transition"
         >
           Register
         </button>
 
         <p className="text-xs text-center text-gray-600 mt-4">
           Already have an account?{" "}
-          <Link to="/" className="text-blue-600 hover:underline">
+          <Link to="/" className="text-blue-600 hover:underline font-bold">
             Login
           </Link>
         </p>
@@ -96,4 +97,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default RegisterPage;

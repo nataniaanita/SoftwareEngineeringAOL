@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-const Login = () => {
+function LoginPage () {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -11,11 +11,11 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-white">
       <form
         onSubmit={handleLogin}
-        className="bg-white border border-gray-300 rounded-md px-6 py-8 w-full max-w-sm"
-      >
+        
+        className="bg-white rounded-2xl shadow-xl px-6 py-8 w-full max-w-sm overflow-hidden transition-all duration-300 transform hover:shadow-2xl">
         <h2 className="text-xl font-bold mb-6 text-gray-800 text-center">
           Login
         </h2>
@@ -62,4 +62,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginPage;

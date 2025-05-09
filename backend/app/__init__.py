@@ -6,7 +6,7 @@ def create_app():
     CORS(app) 
     app.config['UPLOAD_FOLDER'] = 'uploads/images'
 
-    from .routes import upload_bp
-    app.register_blueprint(upload_bp)
+    from .routes import main
+    app.register_blueprint(main)
 
     return app

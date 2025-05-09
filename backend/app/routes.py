@@ -1,11 +1,12 @@
-from flask import Blueprint, request, jsonify
+from flask import Flask, Blueprint, request, jsonify, send_from_directory
 import zipfile
 import os
 from werkzeug.utils import secure_filename
 
-upload_bp = Blueprint('upload_bp', __name__)
+main = Blueprint('upload_bp', __name__)
+
 max_file_size = 50 * 1024 * 1024 # 50 mb
-@upload_bp.route('/upload', methods=['POST']) # dipanggil di axion.post Upload.tsx
+@main.route('/upload', methods=['POST']) # dipanggil di axion.post Upload.tsx
 def upload_zip():
     if 'file' not in request.files:
         return jsonify({'message': 'No file part'}), 400
@@ -21,13 +22,6 @@ def upload_zip():
 
     # if not file.filename.endswith('.zip'): GAPERLU soalnya cm bisa upload zip
     #     return jsonify({'message': 'File must be a .zip'}), 400
-    
-    file.seek(0, os.SEEK_END)
-    file_length = file.tell()
-    file.seek(0)
-
-    if file_length > max_file_size:
-        return jsonify({'message': 'File must not be more than 50MB'})
 
 
     os.makedirs('uploads', exist_ok=True)
@@ -46,3 +40,49 @@ def upload_zip():
     os.remove(zip_path)
 
     return jsonify({'message': 'Dataset uploaded successfully!'}), 200
+
+upload_folder = os.path.abspath("./uploads/images")
+
+@main.route('/files', methods=['GET'])
+def list_uploaded_folders():
+    type_param = request.args.get('type', '')
+    target_path = os.path.join(upload_folder, type_param)
+
+    if not os.path.exists(target_path):
+        return jsonify([])
+
+    try:
+        items = []
+        for entry in os.scandir(target_path):
+            items.append({
+                "name": entry.name,
+                "isDirectory": entry.is_dir()
+            })
+        return jsonify(items)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@main.route('/folders', methods=['GET'])
+def uploaded_folders():
+    items = []
+    target_path = os.path.abspath("./uploads/images")
+    if not os.path.exists(target_path):
+        return jsonify([])
+    try:
+        items = []
+        for folder in os.scandir(target_path):
+            if(folder.is_dir()):
+                items.append({
+                "name": folder.name
+            })
+        if(len(items) == 0):
+            return jsonify({"message": "Database empty"})
+        return jsonify(items)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+@main.route('uploads/images/<type>/<path:filename>')
+def display_image(type ,filename):
+    folder = os.path.join('uploads/images', type)
+    return send_from_directory(folder, filename)
