@@ -1,7 +1,8 @@
 "use client"
 
-import type React from "react"
-
+import type React from "react";
+import { storage } from "../firebase"; 
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { useState, useRef } from "react"
 import axios from "axios"
 import { Upload, X, CheckCircle, AlertCircle, FileUp } from "lucide-react"
