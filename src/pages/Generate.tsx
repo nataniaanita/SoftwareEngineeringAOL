@@ -11,7 +11,7 @@ const Generate: React.FC = () => {
     setError('');
     try {
       const response = await fetch('http://localhost:5000/generate', {
-        method: 'GET', 
+        method: 'GET',
       });
 
       if (!response.ok) {
@@ -26,6 +26,16 @@ const Generate: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  
+  const downloadImage = (base64Image: string, filename: string) => {
+    const link = document.createElement('a');
+    link.href = `data:image/jpeg;base64,${base64Image}`;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
@@ -48,8 +58,16 @@ const Generate: React.FC = () => {
               alt={`Generated ${index}`}
               className="w-full rounded shadow"
             />
-            <p className="mt-2">Discriminator Evaluation: {evaluations[index] > 0.5 ? 'Real' : 'Fake'}</p>
+            <p className="mt-2">
+              Discriminator Evaluation: {evaluations[index] > 0.5 ? 'Real' : 'Fake'}
+            </p>
             <p className="mt-2 text-sm">Confidence: {evaluations[index].toFixed(2)}</p>
+            <button
+              onClick={() => downloadImage(img, `generated_image_${index + 1}.jpg`)}
+              className="mt-2 bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition"
+            >
+              Download
+            </button>
           </div>
         ))}
       </div>
