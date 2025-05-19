@@ -1,21 +1,45 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-function LoginPage () {
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log({ email, password });
+    console.log("emaiL:", email);
+    console.log("pass:", password);
+    fetch("http://localhost:5000/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Login gagal");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        alert("Login berhasil!");
+        localStorage.setItem("loggedUser", JSON.stringify(data.user));
+        navigate("/");
+      })
+      .catch((err) => {
+        console.error(err);
+        alert("Email atau password salah");
+      });
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <form
         onSubmit={handleLogin}
-        
-        className="bg-white rounded-2xl shadow-xl px-6 py-8 w-full max-w-sm overflow-hidden transition-all duration-300 transform hover:shadow-2xl">
+        className="bg-white border border-gray-300 rounded-md px-6 py-8 w-full max-w-sm"
+      >
         <h2 className="text-xl font-bold mb-6 text-gray-800 text-center">
           Login
         </h2>
@@ -24,7 +48,7 @@ function LoginPage () {
           <label className="block text-sm text-gray-700 mb-1">Email</label>
           <input
             type="email"
-            placeholder="olipsukaeek@gmail.com"
+            placeholder="user@gmail.com"
             className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -62,4 +86,4 @@ function LoginPage () {
   );
 };
 
-export default LoginPage;
+export default Login;
