@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   ArrowRight,
   Brain,
@@ -14,10 +14,16 @@ import {
 
 const HomePage = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     setIsVisible(true);
-  }, []);
+
+    const user = localStorage.getItem("loggedUser");
+    console.log(user);
+    setLoggedIn(!!user);
+  }, [location]);
 
   return (
     <div className="min-h-screen bg-gray-50 overflow-hidden">
@@ -47,7 +53,7 @@ const HomePage = () => {
                   <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                 </Link>
                 <Link
-                  to="/login"
+                  to={loggedIn ? "/generate" : "/login"}
                   className="bg-blue-700 bg-opacity-30 hover:bg-opacity-40 text-white border border-blue-400 px-8 py-4 rounded-lg font-medium transition-all flex items-center group"
                 >
                   Try Demo
@@ -195,7 +201,7 @@ const HomePage = () => {
 
         <div className="flex justify-center">
           <Link
-            to="/generate"
+            to={loggedIn ? "/generate" : "/login"}
             className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-4 rounded-lg font-medium transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center group"
           >
             Try Demo Generation
